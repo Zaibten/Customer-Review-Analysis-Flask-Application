@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Mobile Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <!-- Site Metas -->
+  <link rel="icon" href="images/fevicon.png" type="image/gif" />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+
+  <title>Zaibten</title>
+
+  <!-- bootstrap core css -->
+  <link rel="stylesheet" type="text/css" href="static/css/bootstrap.css" />
+  
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+  <!-- fonts style -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,600,700&display=swap" rel="stylesheet" />
+
+  <!-- font awesome style -->
+  <link href="static/css/font-awesome.min.css" rel="stylesheet" />
+  <!-- Custom styles for this template -->
+  <link href="static/css/style.css" rel="stylesheet" />
+  <!-- responsive style -->
+  <link href="static/css/responsive.css" rel="stylesheet" />
+
+  <script>
+    function confirmLogout() {
+      // Display confirmation box
+      var result = confirm("Are you sure you want to log out?");
+      if (result) {
+        // Redirect to logout if confirmed
+        window.location.href = "/logout";
+      }
+    }
+  </script>
+
+<style>
+
+    .loader {
+        display: none;
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+    }
+
+    .animated-img {
+        animation: fadeIn 0.5s ease-in-out;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform 0.3s;
+    }
+
+    .animated-img:hover {
+        transform: scale(1.05);
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateY(-20px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    /* Light theme */
+    .light-theme {
+        background-color: #ffffffff;
+        color: #343a40;
+    }
+
+    .light-theme .form-control {
+        border-color: #ced4da;
+    }
+
+    .light-theme .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    /* Dark theme */
+    .dark-theme {
+        background-color: #343a40;
+        color: #f8f9fa;
+    }
+
+    .dark-theme .form-control {
+        border-color: #495057;
+        background-color: #495057;
+        color: #f8f9fa;
+    }
+
+    .dark-theme .navbar {
+        background-color: #212529;
+    }
+
+    .form-control {
+        transition: border-color 0.3s, box-shadow 0.3s;
+        border-radius: 5px;
+    }
+
+    .btn {
+        border-radius: 5px;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+    }
+
+    h1,
+    h2 {
+        font-weight: bold;
+        color: #343a40;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    label {
+        font-weight: bold;
+        color: #495057;
+    }
+
+    .image-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .image-container img {
+        max-width: 100%;
+        border-radius: 5px;
+        transition: transform 0.3s;
+        cursor: pointer;
+    }
+
+    /* Modal Styles */
+    .modal .modal-content {
+        max-width: 100%;
+    }
+
+    .modal img {
+        max-width: 100%;
+        height: auto;
+        transition: transform 0.3s; /* Add transition for smooth zoom */
+    }
+
+    .modal-body {
+        position: relative; /* Set relative positioning for absolute positioning of buttons */
+    }
+
+    .zoom-buttons {
+        position: absolute;
+        top: 10px; /* Adjust as needed */
+        right: 10px; /* Adjust as needed */
+        z-index: 10; /* Ensure it's above the image */
+    }
+
+    /* Footer Styles */
+    .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #343a40;
+        color: white;
+        text-align: center;
+        padding: 10px;
+        animation: slideIn 0.5s ease-in-out;
+    }
+
+    .footer a {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    .footer a:hover {
+        text-decoration: underline;
+    }
+
+    .footer p {
+        margin: 0;
+    }
+</style>
+</head>
+<body class="light-theme">
+
+    <div class="hero_area">
+        <header class="header_section long_section px-0">
+          <nav class="navbar navbar-expand-lg custom_nav-container ">
+            <a class="navbar-brand" href="/">
+              <span>
+                Z A I B T E N
+              </span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class=""> </span>
+            </button>
+    
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <div class="d-flex mx-auto flex-column flex-lg-row align-items-center">
+                <ul class="navbar-nav">
+                  <li class="nav-item active">
+                    <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/index">Review Analysis</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/about.html">About Us</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/livescrap">Live Scrapper</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="contact.html">Contact Us</a>
+                  </li>
+                </ul>
+              </div>
+              <div class="quote_btn-container">
+                {% if username %}
+                  <a href="#">
+                    <span>Welcome, {{ username }}</span>
+                    <i class="fa fa-user" aria-hidden="true"></i>
+                  </a>
+                  <!-- Trigger confirmLogout function when the user clicks on logout -->
+                  <a href="javascript:void(0);" onclick="confirmLogout()" class="ml-3">
+                    <span>Logout</span>
+                    <i class="fa fa-sign-out" aria-hidden="true"></i>
+                  </a>
+                {% else %}
+                  <a href="/login">
+                    <span>Login</span>
+                    <i class="fa fa-user" aria-hidden="true"></i>
+                  </a>
+                {% endif %}
+                <form class="form-inline">
+                  <button class="btn my-2 my-sm-0 nav_search-btn" type="submit">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </nav>
+        </header>
+    
+      
+      <!-- Full Page Image Background Carousel Header -->
+      <div id="myCarousel" class="carousel slide">
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+                <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                <li data-target="#myCarousel" data-slide-to="1"></li>
+                <li data-target="#myCarousel" data-slide-to="2"></li>
+            </ol>
+    
+            <!-- Wrapper for Slides -->
+            <div class="carousel-inner">
+                <div class="item active">
+                    <!-- Set the first background image using inline CSS below. -->
+                    <div class="fill" style="background-image:url('http://www.marchettidesign.net/demo/optimized-bootstrap/code.jpg');"></div>
+                    <div class="carousel-caption">
+                         <h2 class="animated fadeInLeft">Caption Animation</h2>
+                         <p class="animated fadeInUp">Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
+                         <p class="animated fadeInUp"><a href="#" class="btn btn-transparent btn-rounded btn-large">Learn More</a></p>
+                    </div>
+                </div>
+                <div class="item">
+                    <!-- Set the second background image using inline CSS below. -->
+                    <div class="fill" style="background-image:url('http://www.marchettidesign.net/demo/optimized-bootstrap/conference.jpg');"></div>
+                    <div class="carousel-caption">
+                         <h2 class="animated fadeInDown">Caption Animation</h2>
+                         <p class="animated fadeInUp">Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
+                         <p class="animated fadeInUp"><a href="#" class="btn btn-transparent btn-rounded btn-large">Learn More</a></p>
+                    </div>
+                </div>
+                <div class="item">
+                    <!-- Set the third background image using inline CSS below. -->
+                    <div class="fill" style="background-image:url('http://www.marchettidesign.net/demo/optimized-bootstrap/campus.jpg');"></div>
+                    <div class="carousel-caption">
+                         <h2 class="animated fadeInRight">Caption Animation</h2>
+                         <p class="animated fadeInRight">Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
+                         <p class="animated fadeInRight"><a href="#" class="btn btn-transparent btn-rounded btn-large">Learn More</a></p>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Controls -->
+            <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+                <span class="icon-prev"></span>
+            </a>
+            <a class="right carousel-control" href="#myCarousel" data-slide="next">
+                <span class="icon-next"></span>
+            </a>
+    
+        </div>
+        <!-- end header section -->
+        <!-- slider section -->
+        <section class="slider_section long_section">
+          <div id="customCarousel" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <div class="container ">
+                  <div class="row">
+                    <div class="col-md-5">
+                      <div class="detail-box">
+                        <h1>
+                          For All Your <br>
+                          Reviews Needs
+                        </h1>
+                        <p>
+                          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Minus quidem maiores perspiciatis, illo maxime voluptatem a itaque suscipit.
+                        </p>
+                        <div class="btn-box">
+                          <a href="" class="btn1">
+                            Contact Us
+                          </a>
+                          <a href="" class="btn2">
+                            About Us
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-7">
+                      <div class="img-box">
+                        <img src="static/images/slider-img.png" alt="">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <div class="container ">
+                  <div class="row">
+                    <div class="col-md-5">
+                      <div class="detail-box">
+                        <h1>
+                          For All Your <br>
+                          Reviews Needs
+                        </h1>
+                        <p>
+                          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Minus quidem maiores perspiciatis, illo maxime voluptatem a itaque suscipit.
+                        </p>
+                        <div class="btn-box">
+                          <a href="" class="btn1">
+                            Contact Us
+                          </a>
+                          <a href="" class="btn2">
+                            About Us
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-7">
+                      <div class="img-box">
+                        <img src="static/images/slider-img.png" alt="">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <div class="container ">
+                  <div class="row">
+                    <div class="col-md-5">
+                      <div class="detail-box">
+                        <h1>
+                          For All Your <br>
+                          Reviews Needs
+                        </h1>
+                        <p>
+                          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Minus quidem maiores perspiciatis, illo maxime voluptatem a itaque suscipit.
+                        </p>
+                        <div class="btn-box">
+                          <a href="" class="btn1">
+                            Contact Us
+                          </a>
+                          <a href="" class="btn2">
+                            About Us
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-7">
+                      <div class="img-box">
+                        <img src="static/images/slider-img.png" alt="">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <ol class="carousel-indicators">
+              <li data-target="#customCarousel" data-slide-to="0" class="active"></li>
+              <li data-target="#customCarousel" data-slide-to="1"></li>
+              <li data-target="#customCarousel" data-slide-to="2"></li>
+            </ol>
+          </div>
+        </section>
+        <!-- end slider section -->
+      </div>
+
+    <div class="container" id="scroll_container">
+        <h1 class="mt-5">Customer Reviews Analysis</h1>
+
+        <form method="post" onsubmit="showLoader(); storeScrollPosition()">
+            <div class="my-4">
+                <label for="category">Select Category:</label>
+                <select id="category" name="category" class="form-control" onchange="this.form.submit()">
+                    <option value="">-- Select a category --</option>
+                    {% for category in categories %}
+                    <option value="{{ category }}" {% if selected_category == category %}selected{% endif %}>{{ category }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="my-4">
+                <label for="subcategory">Select Sub-Category:</label>
+                <select id="subcategory" name="subcategory" class="form-control" onchange="this.form.submit()">
+                    <option value="">-- Select a sub-category --</option>
+                    {% for subcategory in subcategories %}
+                    <option value="{{ subcategory }}" {% if selected_subcategory == subcategory %}selected{% endif %}>{{ subcategory }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="my-4">
+                <label for="model">Select Model:</label>
+                <select id="model" name="model" class="form-control">
+                    <option value="">-- Select a model --</option>
+                    {% for model in models %}
+                    <option value="{{ model }}" {% if selected_model == model %}selected{% endif %}>{{ model }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="my-4">
+                <input type="submit" value="Submit" class="btn btn-primary">
+            </div>
+        </form>
+
+        <div class="loader" id="loader">
+            <img src="{{ url_for('static', filename='images/loader.gif') }}" alt="Loading...">
+        </div>
+
+        <!-- Output the selected product name -->
+        {% if product_name %}
+        <h2>Product: {{ product_name }}</h2>
+        <p>Good Reviews: {{ good_review_count }}</p>
+        <p>Bad Reviews: {{ bad_review_count }}</p>
+        {% endif %}
+
+        <div class="row">
+            <!-- Review Plot -->
+            {% if review_plot %}
+            <div class="col-md-6 mb-4 animated-img" data-toggle="modal" data-target="#imageModal" data-image="data:image/png;base64,{{ review_plot }}">
+                <img src="data:image/png;base64,{{ review_plot }}" alt="Review Plot" class="img-fluid">
+            </div>
+            {% endif %}
+
+            <!-- Rating Distribution Plot -->
+            {% if rating_distribution_plot %}
+            <div class="col-md-6 mb-4 animated-img" data-toggle="modal" data-target="#imageModal" data-image="data:image/png;base64,{{ rating_distribution_plot }}">
+                <img src="data:image/png;base64,{{ rating_distribution_plot }}" alt="Rating Distribution" class="img-fluid">
+            </div>
+            {% endif %}
+
+            <!-- Average Rating Plot -->
+            {% if average_rating_plot %}
+            <div class="col-md-6 mb-4 animated-img" data-toggle="modal" data-target="#imageModal" data-image="data:image/png;base64,{{ average_rating_plot }}">
+                <img src="data:image/png;base64,{{ average_rating_plot }}" alt="Average Rating" class="img-fluid">
+            </div>
+            {% endif %}
+
+            <!-- Box Plot -->
+            {% if box_plot %}
+            <div class="col-md-6 mb-4 animated-img" data-toggle="modal" data-target="#imageModal" data-image="data:image/png;base64,{{ box_plot }}">
+                <img src="data:image/png;base64,{{ box_plot }}" alt="Box Plot" class="img-fluid">
+            </div>
+            {% endif %}
+
+            <!-- Word Cloud -->
+            {% if word_cloud %}
+            <div class="col-md-6 mb-4 animated-img" data-toggle="modal" data-target="#imageModal" data-image="data:image/png;base64,{{ word_cloud }}">
+                <img src="data:image/png;base64,{{ word_cloud }}" alt="Word Cloud" class="img-fluid">
+            </div>
+            {% endif %}
+
+            <!-- Top Reviews Plot -->
+            {% if top_reviews_plot %}
+            <div class="col-md-6 mb-4 animated-img" data-toggle="modal" data-target="#imageModal" data-image="data:image/png;base64,{{ top_reviews_plot }}">
+                <img src="data:image/png;base64,{{ top_reviews_plot }}" alt="Top Reviews" class="img-fluid">
+            </div>
+            {% endif %}
+
+            <!-- Top Reviewers Plot -->
+            {% if top_reviewers_plot %}
+            <div class="col-md-6 mb-4 animated-img" data-toggle="modal" data-target="#imageModal" data-image="data:image/png;base64,{{ top_reviewers_plot }}">
+                <img src="data:image/png;base64,{{ top_reviewers_plot }}" alt="Top Reviewers" class="img-fluid">
+            </div>
+            {% endif %}
+
+            <!-- Sentiment Analysis Plot -->
+            {% if sentiment_plot %}
+            <div class="col-md-6 mb-4 animated-img" data-toggle="modal" data-target="#imageModal" data-image="data:image/png;base64,{{ sentiment_plot }}">
+                <img src="data:image/png;base64,{{ sentiment_plot }}" alt="Sentiment Analysis" class="img-fluid">
+            </div>
+            {% endif %}
+
+            <!-- Trend of Ratings Plot -->
+            {% if trend_plot %}
+            <div class="col-md-6 mb-4 animated-img" data-toggle="modal" data-target="#imageModal" data-image="data:image/png;base64,{{ trend_plot }}">
+                <img src="data:image/png;base64,{{ trend_plot }}" alt="Trend of Ratings" class="img-fluid">
+            </div>
+            {% endif %}
+
+            <!-- Top 5 Words Plot -->
+            {% if top_words_plot %}
+            <div class="col-md-6 mb-4 animated-img" data-toggle="modal" data-target="#imageModal" data-image="data:image/png;base64,{{ top_words_plot }}">
+                <img src="data:image/png;base64,{{ top_words_plot }}" alt="Top 5 Words" class="img-fluid">
+            </div>
+            {% endif %}
+
+            <!-- Review Length Plot -->
+            {% if review_length_plot %}
+            <div class="col-md-6 mb-4 animated-img" data-toggle="modal" data-target="#imageModal" data-image="data:image/png;base64,{{ review_length_plot }}">
+                <img src="data:image/png;base64,{{ review_length_plot }}" alt="Review Length Distribution" class="img-fluid">
+            </div>
+            {% endif %}
+
+            <!-- Ratings Heatmap -->
+            {% if ratings_heatmap_plot %}
+            <div class="col-md-6 mb-4 animated-img" data-toggle="modal" data-target="#imageModal" data-image="data:image/png;base64,{{ ratings_heatmap_plot }}">
+                <img src="data:image/png;base64,{{ ratings_heatmap_plot }}" alt="Ratings Heatmap" class="img-fluid">
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Modal for displaying the images -->
+        <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document"> <!-- Use modal-lg for larger dialog -->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="imageModalLabel">Plot</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <img id="modalImage" src="" alt="Plot" class="img-fluid" style="max-width: 100%; height: auto;">
+                        <div class="zoom-buttons">
+                            <button id="zoomIn" class="btn btn-primary">
+                                <i class="fas fa-search-plus"></i> <!-- Zoom In Icon -->
+                            </button>
+                            <button id="zoomOut" class="btn btn-secondary">
+                                <i class="fas fa-search-minus"></i> <!-- Zoom Out Icon -->
+                            </button>
+                            <a id="downloadLink" class="btn btn-success" download>
+                                <i class="fas fa-download"></i> <!-- Download Icon -->
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script>
+            // JavaScript to handle image zoom and download
+            let zoomLevel = 1;
+
+            function openImageModal(imageSrc) {
+                const modalImage = document.getElementById('modalImage');
+                const downloadLink = document.getElementById('downloadLink');
+
+                modalImage.src = imageSrc;
+                downloadLink.href = imageSrc; // Set the href for downloading
+                $('#imageModal').modal('show'); // Show the modal
+            }
+
+            document.getElementById('zoomIn').addEventListener('click', function() {
+                zoomLevel += 0.1; // Increase zoom level
+                document.getElementById('modalImage').style.transform = `scale(${zoomLevel})`;
+            });
+
+            document.getElementById('zoomOut').addEventListener('click', function() {
+                if (zoomLevel > 1) {
+                    zoomLevel -= 0.1; // Decrease zoom level
+                    document.getElementById('modalImage').style.transform = `scale(${zoomLevel})`;
+                }
+            });
+
+            document.querySelectorAll('.animated-img').forEach(imgDiv => {
+                imgDiv.addEventListener('click', function () {
+                    const imageSrc = this.getAttribute('data-image');
+                    openImageModal(imageSrc);
+                });
+            });
+
+            // Loader function
+            function showLoader() {
+                document.getElementById('loader').style.display = 'block';
+            }
+
+            // Store scroll position function
+            function storeScrollPosition() {
+                sessionStorage.setItem('scrollPosition', window.scrollY);
+            }
+
+            // Theme toggle
+            document.getElementById('themeToggle').addEventListener('click', function () {
+                const currentTheme = document.body.classList.contains('dark-theme') ? 'dark' : 'light';
+                if (currentTheme === 'light') {
+                    document.body.classList.replace('light-theme', 'dark-theme');
+                } else {
+                    document.body.classList.replace('dark-theme', 'light-theme');
+                }
+            });
+
+            // Restore scroll position
+            window.onload = function () {
+                const scrollPosition = sessionStorage.getItem('scrollPosition');
+                if (scrollPosition) {
+                    window.scrollTo(0, parseInt(scrollPosition));
+                }
+            };
+        </script>
+
+        <br><br><footer class="footer">
+            <p>&copy; 2024 Review Analysis Dashboard | <a href="#">Privacy Policy</a></p>
+        </footer>
+    </div>
+    <script>
+        // Restore scroll position and scroll to the container
+        window.onload = function () {
+    const scrollPosition = sessionStorage.getItem('scrollPosition');
+    if (scrollPosition) {
+        window.scrollTo({
+            top: parseInt(scrollPosition),
+            behavior: 'smooth' // Add smooth scrolling behavior
+        });
+    } else {
+        scrollToElement(); // Scroll to the container smoothly
+    }
+};
+
+function scrollToElement() {
+    document.getElementById('scroll_container').scrollIntoView({
+        behavior: 'smooth', // Smooth scrolling
+        block: 'start'      // Align to the top of the div
+    });
+}
+
+    </script>
+    <script src="static/js/jquery-3.4.1.min.js"></script>
+    <!-- bootstrap js -->
+    <script src="static/js/bootstrap.js"></script>
+    <!-- custom js -->
+    <script src="static/js/custom.js"></script>
+    <!-- Google Map -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh39n5U-4IoWpsVGUHWdqB6puEkhRLdmI&callback=myMap"></script>
+    <!-- End Google Map -->   
+</body>
+
+</html>
