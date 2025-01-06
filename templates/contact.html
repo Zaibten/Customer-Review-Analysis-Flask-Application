@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    
+  <link rel="icon" href="static/images/logo.png" type="image/png" />
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <!-- Site Metas -->
+    <link rel="icon" href="images/fevicon.png" type="image/gif" />
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  
+    <title>Contact | ZAIBTEN</title>
+    <!-- Link to Google Fonts for modern typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  
+  
+    <!-- bootstrap core css -->
+    <link rel="stylesheet" type="text/css" href="static/css/bootstrap.css" />
+  
+    <!-- fonts style -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,600,700&display=swap" rel="stylesheet" />
+  
+    <!-- font awesome style -->
+    <link href="static/css/font-awesome.min.css" rel="stylesheet" />
+    <!-- Custom styles for this template -->
+    <link href="static/css/style.css" rel="stylesheet" />
+    <!-- responsive style -->
+    <link href="static/css/responsive.css" rel="stylesheet" />
+    <script>
+      function confirmLogout() {
+        // Display confirmation box
+        var result = confirm("Are you sure you want to log out?");
+        if (result) {
+          // Redirect to logout if confirmed
+          window.location.href = "/logout";
+        }
+      }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDiiukUcdg7JG5SY1OIuJg1TqVVAhqN4tg&callback=initMap&v=weekly" async defer></script>
+    
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #ffffff, #f7f7f7);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+/* Footer Styles */
+.nav-item.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+/* Adjust dropdown positioning */
+.navbar-nav .dropdown-menu {
+  margin-top: 0;
+  border-radius: 0;
+}
+.footer {
+            background-color: #111;
+            color: #bbb;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .footer-logo img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+        }
+
+        .footer-logo h5 {
+            margin-top: 10px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        .footer-links .footer-link {
+            color: #ccc;
+            font-size: 18px;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links .footer-link:hover {
+            color: #fff;
+        }
+
+        .footer-social-icons {
+            margin-top: 30px;
+        }
+
+        .footer-social-icons a {
+            color: #ccc;
+            font-size: 25px;
+            margin: 0 15px;
+            transition: color 0.3s ease;
+        }
+
+        .footer-social-icons a:hover {
+            color: #fff;
+        }
+
+        .footer-about {
+            margin-top: 40px;
+            font-size: 16px;
+            color: #bbb;
+        }
+
+        .footer-about p {
+            line-height: 1.6;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .footer-links {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        /* Section Header */
+        .header-section {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInDown 1s;
+        }
+
+        .header-section h1 {
+            font-size: 3.5em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .header-section p {
+            font-size: 1.2em;
+            color: #666;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .container {
+            width: 100%;
+            padding: 50px;
+            box-sizing: border-box;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header-section h1 {
+            font-size: 3em;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .header-section p {
+            font-size: 1.2em;
+            color: #666;
+        }
+
+        .contact-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .form-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .form-card h2 {
+            font-size: 1.8em;
+            color: #222;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-size: 1.1em;
+            color: #444;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1em;
+            margin-top: 5px;
+        }
+
+        .form-group button {
+            background-color: #007BFF;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .form-group button:hover {
+            background-color: #0056b3;
+        }
+
+        #map {
+            height: 400px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow: auto;
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            text-align: center;
+        }
+
+        .modal-content img {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+            border-radius: 50%;
+        }
+
+        .modal-content h2 {
+            color: #333;
+        }
+
+        .modal-content p {
+            font-size: 1.2em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero_area">
+        <header class="header_section long_section px-0">
+          <nav class="navbar navbar-expand-lg custom_nav-container ">
+            <a class="navbar-brand" href="/">
+              <span>
+                Z A I B T E N
+              </span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class=""> </span>
+            </button>
+    
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <div class="d-flex mx-auto flex-column flex-lg-row align-items-center">
+                <ul class="navbar-nav">
+                  <li class="nav-item active">
+                    <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/reviews">Review Analysis</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/about">About Us</a>
+                  </li>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="/livescrap" id="liveScrapDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Live Scrapper
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="liveScrapDropdown">
+                      <li><a class="dropdown-item" href="#">Live Scrapper</a></li>
+                      <li><a class="dropdown-item" href="/livescrap">Amazon Scrapper</a></li>
+                      <li><a class="dropdown-item" href="/ebay_index">Ebay Scrapper</a></li>
+                      <!-- <li><a class="dropdown-item" href="/scrap-help">Help</a></li> -->
+                    </ul>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="contact.html">Contact Us</a>
+                  </li>
+                </ul>
+              </div>
+              
+              <div class="quote_btn-container">
+                {% if username %}
+                  <a href="#">
+                    <span>{{ username }}</span>
+                    <i class="fa fa-user" aria-hidden="true"></i>
+                  </a>
+                  <!-- Trigger confirmLogout function when the user clicks on logout -->
+                  <a href="javascript:void(0);" onclick="confirmLogout()" class="ml-3">
+                    <span>Logout</span>
+                    <i class="fa fa-sign-out" aria-hidden="true"></i>
+                  </a>
+                {% else %}
+                  <a href="/login">
+                    <span>Login</span>
+                    <i class="fa fa-user" aria-hidden="true"></i>
+                  </a>
+                {% endif %}
+                <form class="form-inline">
+                  <button class="btn my-2 my-sm-0 nav_search-btn" type="submit">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </nav>
+        </header>
+    
+      
+      <!-- Full Page Image Background Carousel Header -->
+      <div id="myCarousel" class="carousel slide">
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+                <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                <li data-target="#myCarousel" data-slide-to="1"></li>
+                <li data-target="#myCarousel" data-slide-to="2"></li>
+            </ol>
+    
+            <!-- Wrapper for Slides -->
+            <div class="carousel-inner">
+                <div class="item active">
+                    <!-- Set the first background image using inline CSS below. -->
+                    <div class="fill" style="background-image:url('http://www.marchettidesign.net/demo/optimized-bootstrap/code.jpg');"></div>
+                    <div class="carousel-caption">
+                         <h2 class="animated fadeInLeft">Caption Animation</h2>
+                         <p class="animated fadeInUp">Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
+                         <p class="animated fadeInUp"><a href="#" class="btn btn-transparent btn-rounded btn-large">Learn More</a></p>
+                    </div>
+                </div>
+                <div class="item">
+                    <!-- Set the second background image using inline CSS below. -->
+                    <div class="fill" style="background-image:url('http://www.marchettidesign.net/demo/optimized-bootstrap/conference.jpg');"></div>
+                    <div class="carousel-caption">
+                         <h2 class="animated fadeInDown">Caption Animation</h2>
+                         <p class="animated fadeInUp">Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
+                         <p class="animated fadeInUp"><a href="#" class="btn btn-transparent btn-rounded btn-large">Learn More</a></p>
+                    </div>
+                </div>
+                <div class="item">
+                    <!-- Set the third background image using inline CSS below. -->
+                    <div class="fill" style="background-image:url('http://www.marchettidesign.net/demo/optimized-bootstrap/campus.jpg');"></div>
+                    <div class="carousel-caption">
+                         <h2 class="animated fadeInRight">Caption Animation</h2>
+                         <p class="animated fadeInRight">Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
+                         <p class="animated fadeInRight"><a href="#" class="btn btn-transparent btn-rounded btn-large">Learn More</a></p>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Controls -->
+            <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+                <span class="icon-prev"></span>
+            </a>
+            <a class="right carousel-control" href="#myCarousel" data-slide="next">
+                <span class="icon-next"></span>
+            </a>
+    
+        </div>
+        <!-- end header section -->
+        <!-- slider section -->
+        <section class="slider_section long_section">
+          <div id="customCarousel" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <div class="container ">
+                  <div class="row">
+                    <div class="col-md-5">
+                      <div class="detail-box">
+                        <h1>
+                          For All Your <br>
+                          Reviews Needs
+                        </h1>
+                        <p>
+                          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Minus quidem maiores perspiciatis, illo maxime voluptatem a itaque suscipit.
+                        </p>
+                        <div class="btn-box">
+                          <a href="" class="btn1">
+                            Contact Us
+                          </a>
+                          <a href="" class="btn2">
+                            About Us
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-7">
+                      <div class="img-box">
+                        <img src="static/images/slider-img.png" alt="">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <div class="container ">
+                  <div class="row">
+                    <div class="col-md-5">
+                      <div class="detail-box">
+                        <h1>
+                          For All Your <br>
+                          Reviews Needs
+                        </h1>
+                        <p>
+                          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Minus quidem maiores perspiciatis, illo maxime voluptatem a itaque suscipit.
+                        </p>
+                        <div class="btn-box">
+                          <a href="" class="btn1">
+                            Contact Us
+                          </a>
+                          <a href="" class="btn2">
+                            About Us
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-7">
+                      <div class="img-box">
+                        <img src="static/images/slider-img.png" alt="">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <div class="container ">
+                  <div class="row">
+                    <div class="col-md-5">
+                      <div class="detail-box">
+                        <h1>
+                          For All Your <br>
+                          Reviews Needs
+                        </h1>
+                        <p>
+                          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Minus quidem maiores perspiciatis, illo maxime voluptatem a itaque suscipit.
+                        </p>
+                        <div class="btn-box">
+                          <a href="" class="btn1">
+                            Contact Us
+                          </a>
+                          <a href="" class="btn2">
+                            About Us
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-7">
+                      <div class="img-box">
+                        <img src="static/images/slider-img.png" alt="">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <ol class="carousel-indicators">
+              <li data-target="#customCarousel" data-slide-to="0" class="active"></li>
+              <li data-target="#customCarousel" data-slide-to="1"></li>
+              <li data-target="#customCarousel" data-slide-to="2"></li>
+            </ol>
+          </div>
+        </section>
+        <!-- end slider section -->
+      </div>
+    <div class="container">
+        <!-- Header Section -->
+        <section class="header-section">
+            <h1>Contact Zaibten</h1>
+            <p>We would love to hear from you! Reach out to us for any questions, feedback, or support.</p>
+        </section>
+
+        <!-- Contact Form Section -->
+        <section class="contact-form">
+            <div class="form-card">
+                <h2>Contact Form</h2>
+                <form id="contact-form">
+                    <div class="form-group">
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" name="name" required placeholder="Enter your name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Your Email</label>
+                        <input type="email" id="email" name="email" required placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Your Message</label>
+                        <textarea id="message" name="message" rows="5" required placeholder="Enter your message"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit">Send Message</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Google Map Section -->
+            <div class="form-card">
+                <h2>Our Location</h2>
+                <div id="map"></div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <img src="/static/Images/logo.png" alt="Zaibten Logo">
+            <h2>Thank you for contacting Zaibten!</h2>
+            <p>We will get back to you shortly.</p>
+        </div>
+    </div>
+    <!-- Footer -->
+    <div class="footer">
+        <div class="footer-logo">
+            <img src="../static/images/logo.png" alt="Logo">
+            <h5>Z A I B T E N</h5>
+        </div>
+        <div class="footer-links">
+            <a href="#" class="footer-link">Home</a>
+            <a href="#" class="footer-link">About</a>
+            <a href="#" class="footer-link">Services</a>
+            <a href="#" class="footer-link">Blog</a>
+            <a href="#" class="footer-link">Contact</a>
+        </div>
+        <div class="footer-social-icons">
+            <a href="#" class="fab fa-facebook-f"></a>
+            <a href="#" class="fab fa-twitter"></a>
+            <a href="#" class="fab fa-linkedin-in"></a>
+            <a href="#" class="fab fa-instagram"></a>
+        </div>
+        <div class="footer-about">
+            <p>MyApp is a platform that provides reliable customer reviews and analysis to help you make the best buying decisions. With a focus on transparency and authenticity, we aim to be the most trusted review platform.</p>
+            <p>For more information, feel free to contact us via our contact page or visit our FAQ section for any inquiries.</p>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"></script>
+  
+  
+    <!-- jQery -->
+    <script src="static/js/jquery-3.4.1.min.js"></script>
+    <!-- bootstrap js -->
+    <script src="static/js/bootstrap.js"></script>
+    <!-- custom js -->
+    <script src="static/js/custom.js"></script>
+
+    <script>
+        function initMap() {
+            const location = { lat: 24.912332134908254, lng: 67.18810094125033 }; // Karachi Coordinates
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 14,
+                center: location,
+            });
+
+            const marker = new google.maps.Marker({
+                position: location,
+                map: map,
+                title: "Zaibten Location",
+            });
+        }
+
+        $("#contact-form").on("submit", function (e) {
+            e.preventDefault();
+            const name = $("#name").val();
+            const email = $("#email").val();
+            const message = $("#message").val();
+
+            if (name && email && message) {
+                $('#successModal').fadeIn();
+                setTimeout(function () {
+                    $('#successModal').fadeOut();
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>

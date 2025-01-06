@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Ebay Scrapper | Zaibten</title>
+        <!-- Bootstrap CSS -->
+         
+      <link rel="icon" href="static/images/logo.png" type="image/png" />
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+        <!-- Chart.js Library -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/emailjs-com@2.6.4/dist/email.min.js"></script>
+        <script src="https://smtpjs.com/v3/smtp.js"></script>
+          <!-- Basic -->
+      <meta charset="utf-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <!-- Mobile Metas -->
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+      <!-- Site Metas -->
+      <link rel="icon" href="images/fevicon.png" type="image/gif" />
+      <meta name="keywords" content="" />
+      <meta name="description" content="" />
+      <meta name="author" content="" />
+    
+      <!-- bootstrap core css -->
+      <link rel="stylesheet" type="text/css" href="static/css/bootstrap.css" />
+      
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+      <!-- fonts style -->
+      <link href="https://fonts.googleapis.com/css?family=Poppins:400,600,700&display=swap" rel="stylesheet" />
+    
+      <!-- font awesome style -->
+      <link href="static/css/font-awesome.min.css" rel="stylesheet" />
+      <!-- Custom styles for this template -->
+      <link href="static/css/style.css" rel="stylesheet" />
+      <!-- responsive style -->
+      <link href="static/css/responsive.css" rel="stylesheet" />
+      <script>
+        function confirmLogout() {
+          // Display confirmation box
+          var result = confirm("Are you sure you want to log out?");
+          if (result) {
+            // Redirect to logout if confirmed
+            window.location.href = "/logout";
+          }
+        }
+      </script>
+        
+        <!-- Custom CSS -->
+        <style>
+            body {
+                background: linear-gradient(135deg, #ffffff, #f7f7f7);
+                font-family: 'Poppins', sans-serif;
+            }
+            .nav-item.dropdown:hover .dropdown-menu {
+      display: block;
+    }
+    
+    /* Adjust dropdown positioning */
+    .navbar-nav .dropdown-menu {
+      margin-top: 0;
+      border-radius: 0;
+    }
+            .loader {
+            display: none;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+        }
+    
+        .animated-img {
+            animation: fadeIn 0.5s ease-in-out;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+    
+        .animated-img:hover {
+            transform: scale(1.05);
+        }
+    
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+    
+            to {
+                opacity: 1;
+            }
+        }
+    
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+    
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    
+        /* Light theme */
+        .light-theme {
+            background-color: #ffffffff;
+            color: #343a40;
+        }
+    
+        .light-theme .form-control {
+            border-color: #ced4da;
+        }
+    
+        .light-theme .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+    
+        /* Dark theme */
+        .dark-theme {
+            background-color: #343a40;
+            color: #f8f9fa;
+        }
+    
+        .dark-theme .form-control {
+            border-color: #495057;
+            background-color: #495057;
+            color: #f8f9fa;
+        }
+    
+        .dark-theme .navbar {
+            background-color: #212529;
+        }
+    
+        .form-control {
+            transition: border-color 0.3s, box-shadow 0.3s;
+            border-radius: 5px;
+        }
+    
+        .btn {
+            border-radius: 5px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+    
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        }
+    
+        h1,
+        h2 {
+            font-weight: bold;
+            color: #343a40;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+    
+        label {
+            font-weight: bold;
+            color: #495057;
+        }
+    
+        .image-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+    
+        .image-container img {
+            max-width: 100%;
+            border-radius: 5px;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+    
+        /* Modal Styles */
+        .modal .modal-content {
+            max-width: 100%;
+        }
+    
+        .modal img {
+            max-width: 100%;
+            height: auto;
+            transition: transform 0.3s; /* Add transition for smooth zoom */
+        }
+    
+        .modal-body {
+            position: relative; /* Set relative positioning for absolute positioning of buttons */
+        }
+    
+        .zoom-buttons {
+            position: absolute;
+            top: 10px; /* Adjust as needed */
+            right: 10px; /* Adjust as needed */
+            z-index: 10; /* Ensure it's above the image */
+        }
+    
+        /* Footer Styles */
+        .footer {
+                background-color: #111;
+                color: #bbb;
+                padding: 60px 20px;
+                text-align: center;
+            }
+    
+            .footer-logo img {
+                width: 100px;
+                height: 100px;
+                border-radius: 50%;
+            }
+    
+            .footer-logo h5 {
+                margin-top: 10px;
+            }
+    
+            .footer-links {
+                display: flex;
+                justify-content: center;
+                gap: 40px;
+                margin-top: 30px;
+            }
+    
+            .footer-links .footer-link {
+                color: #ccc;
+                font-size: 18px;
+                text-decoration: none;
+                transition: color 0.3s ease;
+            }
+    
+            .footer-links .footer-link:hover {
+                color: #fff;
+            }
+    
+            .footer-social-icons {
+                margin-top: 30px;
+            }
+    
+            .footer-social-icons a {
+                color: #ccc;
+                font-size: 25px;
+                margin: 0 15px;
+                transition: color 0.3s ease;
+            }
+    
+            .footer-social-icons a:hover {
+                color: #fff;
+            }
+    
+            .footer-about {
+                margin-top: 40px;
+                font-size: 16px;
+                color: #bbb;
+            }
+    
+            .footer-about p {
+                line-height: 1.6;
+            }
+    
+            /* Mobile Responsiveness */
+            @media (max-width: 768px) {
+                .footer-links {
+                    flex-direction: column;
+                    gap: 20px;
+                }
+            }
+    
+        
+            h1, h2 {
+                animation: fadeIn 1s ease-in-out;
+            }
+        
+            h1 {
+                font-weight: 600;
+                font-size: 2.5rem;
+                margin-bottom: 1rem;
+            }
+        
+            .container {
+                background-color: #fff;
+                padding: 2rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+        
+            .form-control {
+                transition: all 0.3s ease;
+            }
+        
+            .form-control:focus {
+                box-shadow: 0 0 10px rgba(33, 150, 243, 0.5);
+                border-color: #2196f3;
+            }
+        
+            button {
+                transition: background-color 0.3s ease, transform 0.2s ease;
+            }
+        
+            button:hover {
+                background-color: #007bff;
+                transform: translateY(-3px);
+            }
+        
+            /* Animations */
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+        
+            @keyframes slideUp {
+                from { transform: translateY(20px); opacity: 0; }
+                to { transform: translateY(0); opacity: 1; }
+            }
+        
+            .loading {
+                display: none; /* Initially hidden */
+                animation: fadeIn 0.8s ease-in-out;
+            }
+        
+            .table-container {
+                max-height: 400px; /* Adjust height as necessary */
+                overflow-y: auto;  /* Enable vertical scrolling */
+            }
+        
+            table.data th, table.data td {
+                border: 1px solid #ddd;
+                padding: 12px;
+                text-align: left;
+                animation: slideUp 0.5s ease-in-out;
+            }
+        
+            .list-group-item {
+                background-color: #f8f9fa;
+                animation: slideUp 0.7s ease-in-out;
+            }
+        
+            /* Scrollable review sections */
+            .scrollable-reviews {
+                max-height: 300px; /* Set height to control scrolling */
+                overflow-y: auto;  /* Enable scrolling */
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                background-color: #fff;
+            }
+        
+            /* Chart container styles */
+            .chart-container {
+                position: relative;
+                height: 300px;
+                width: 100%;
+                margin-bottom: 30px;
+                border: 1px solid #ddd;
+                padding: 15px;
+                border-radius: 8px;
+                background-color: #f8f9fa;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+        
+            canvas {
+                display: block;
+                max-width: 100%;
+            }
+        
+            /* Chart Legend */
+            .chartjs-legend {
+                text-align: center;
+                font-size: 14px;
+                color: #333;
+            }
+        
+            /* Chart Title */
+            .chartjs-title {
+                font-size: 1.25rem;
+                font-weight: 600;
+                color: #555;
+                text-align: center;
+                margin-bottom: 15px;
+            }
+        
+            /* Bar colors for different charts */
+            .chart-container-bar {
+                background-color: #eaf4fe;
+                border: 2px solid #007bff;
+            }
+        
+            .chart-container-pie {
+                background-color: #f4f9f9;
+                border: 2px solid #ffcc00;
+            }
+        
+            /* Responsive Design */
+            @media (max-width: 768px) {
+                h1 {
+                    font-size: 2rem;
+                }
+            }
+        
+            @media (max-width: 576px) {
+                h1 {
+                    font-size: 1.75rem;
+                }
+            }
+            .container {
+                background-color: white;
+                border-radius: 12px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+                padding: 30px;
+                margin-top: 50px;
+                transition: transform 0.3s;
+            }
+            h1 {
+                color: #343a40;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+            .form-group label {
+                font-weight: bold;
+            }
+            .btn-primary {
+                background-color: #007bff;
+                border-color: #007bff;
+                transition: background-color 0.3s;
+            }
+            .btn-primary:hover {
+                background-color: #0056b3;
+            }
+            .review-count {
+                margin: 10px 0;
+                padding: 15px;
+                border: 1px solid #007bff;
+                border-radius: 5px;
+                background-color: #e9f8ff;
+                color: #007bff;
+                transition: transform 0.3s;
+            }
+            .review-count:hover {
+                transform: scale(1.03);
+            }
+            .table-container {
+                max-height: 400px;
+                overflow-y: auto;
+                border: 1px solid #dee2e6;
+                padding: 10px;
+                border-radius: 5px;
+                background-color: #fff;
+                transition: box-shadow 0.3s;
+            }
+            .table-container:hover {
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            }
+            footer {
+                text-align: center;
+                margin-top: 20px;
+                font-size: 0.9em;
+                color: #6c757d;
+            }
+            .chart-container {
+                position: relative;
+                margin-top: 30px;
+                height: 40vh;
+                width: 100%;
+            }
+            #loader {
+                position: fixed;
+                z-index: 1000;
+                width: 100%;
+                height: 100%;
+                background: rgba(255, 255, 255, 0.8);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            
+            .spinner-border {
+                width: 3rem;
+                height: 3rem;
+                color: #007bff;
+            }
+            .scrollable-comments {
+        max-height: 300px; /* Set the height you want */
+        overflow-y: auto; /* Enable vertical scrolling */
+        border: 1px solid #ccc; /* Optional: add a border for better visibility */
+        padding: 10px; /* Optional: add padding */
+        border-radius: 5px; /* Optional: round the corners */
+    }
+    
+        </style>
+        
+    </head>
+<body  class="light-theme">
+    
+    <div class="loading text-center mt-3" id="loader">
+        <p>Loading, please wait...</p>
+        <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
+    <div class="hero_area">
+        <header class="header_section long_section px-0">
+          <nav class="navbar navbar-expand-lg custom_nav-container ">
+            <a class="navbar-brand" href="/">
+              <span>
+                Z A I B T E N
+              </span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class=""> </span>
+            </button>
+    
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <div class="d-flex mx-auto flex-column flex-lg-row align-items-center">
+                <ul class="navbar-nav">
+                  <li class="nav-item active">
+                    <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/reviews">Review Analysis</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/about">About Us</a>
+                  </li>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="/livescrap" id="liveScrapDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Live Scrapper
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="liveScrapDropdown">
+                      <li><a class="dropdown-item" href="#">Yelp Scrapper</a></li>
+                      <li><a class="dropdown-item" href="/livescrap">Amazon Scrapper</a></li>
+                      <li><a class="dropdown-item" href="/ebay_index">Ebay Scrapper</a></li>
+                      <!-- <li><a class="dropdown-item" href="/scrap-help">Help</a></li> -->
+                    </ul>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/contact">Contact Us</a>
+                  </li>
+                </ul>
+              </div>
+              
+              <div class="quote_btn-container">
+                {% if username %}
+                  <a href="#">
+                    <span>{{ username }}</span>
+                    <i class="fa fa-user" aria-hidden="true"></i>
+                  </a>
+                  <!-- Trigger confirmLogout function when the user clicks on logout -->
+                  <a href="javascript:void(0);" onclick="confirmLogout()" class="ml-3">
+                    <span>Logout</span>
+                    <i class="fa fa-sign-out" aria-hidden="true"></i>
+                  </a>
+                {% else %}
+                  <a href="/login">
+                    <span>Login</span>
+                    <i class="fa fa-user" aria-hidden="true"></i>
+                  </a>
+                {% endif %}
+                <form class="form-inline">
+                  <button class="btn my-2 my-sm-0 nav_search-btn" type="submit">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </nav>
+        </header>
+    
+      
+      <!-- Full Page Image Background Carousel Header -->
+      <div id="myCarousel" class="carousel slide">
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+                <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                <li data-target="#myCarousel" data-slide-to="1"></li>
+                <li data-target="#myCarousel" data-slide-to="2"></li>
+            </ol>
+    
+            <!-- Wrapper for Slides -->
+            <div class="carousel-inner">
+                <div class="item active">
+                    <!-- Set the first background image using inline CSS below. -->
+                    <div class="fill" style="background-image:url('http://www.marchettidesign.net/demo/optimized-bootstrap/code.jpg');"></div>
+                    <div class="carousel-caption">
+                         <h2 class="animated fadeInLeft">Caption Animation</h2>
+                         <p class="animated fadeInUp">Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
+                         <p class="animated fadeInUp"><a href="#" class="btn btn-transparent btn-rounded btn-large">Learn More</a></p>
+                    </div>
+                </div>
+                <div class="item">
+                    <!-- Set the second background image using inline CSS below. -->
+                    <div class="fill" style="background-image:url('http://www.marchettidesign.net/demo/optimized-bootstrap/conference.jpg');"></div>
+                    <div class="carousel-caption">
+                         <h2 class="animated fadeInDown">Caption Animation</h2>
+                         <p class="animated fadeInUp">Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
+                         <p class="animated fadeInUp"><a href="#" class="btn btn-transparent btn-rounded btn-large">Learn More</a></p>
+                    </div>
+                </div>
+                <div class="item">
+                    <!-- Set the third background image using inline CSS below. -->
+                    <div class="fill" style="background-image:url('http://www.marchettidesign.net/demo/optimized-bootstrap/campus.jpg');"></div>
+                    <div class="carousel-caption">
+                         <h2 class="animated fadeInRight">Caption Animation</h2>
+                         <p class="animated fadeInRight">Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
+                         <p class="animated fadeInRight"><a href="#" class="btn btn-transparent btn-rounded btn-large">Learn More</a></p>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Controls -->
+            <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+                <span class="icon-prev"></span>
+            </a>
+            <a class="right carousel-control" href="#myCarousel" data-slide="next">
+                <span class="icon-next"></span>
+            </a>
+    
+        </div>
+        <!-- end header section -->
+        <!-- slider section -->
+        <section class="slider_section long_section">
+          <div id="customCarousel" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <div class="container ">
+                  <div class="row">
+                    <div class="col-md-5">
+                      <div class="detail-box">
+                        <h1>
+                          For All Your <br>
+                          Reviews Needs
+                        </h1>
+                        <p>
+                          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Minus quidem maiores perspiciatis, illo maxime voluptatem a itaque suscipit.
+                        </p>
+                        <div class="btn-box">
+                          <a href="" class="btn1">
+                            Contact Us
+                          </a>
+                          <a href="" class="btn2">
+                            About Us
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-7">
+                      <div class="img-box">
+                        <img src="static/images/slider-img.png" alt="">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <div class="container ">
+                  <div class="row">
+                    <div class="col-md-5">
+                      <div class="detail-box">
+                        <h1>
+                          For All Your <br>
+                          Reviews Needs
+                        </h1>
+                        <p>
+                          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Minus quidem maiores perspiciatis, illo maxime voluptatem a itaque suscipit.
+                        </p>
+                        <div class="btn-box">
+                          <a href="" class="btn1">
+                            Contact Us
+                          </a>
+                          <a href="" class="btn2">
+                            About Us
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-7">
+                      <div class="img-box">
+                        <img src="static/images/slider-img.png" alt="">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <div class="container ">
+                  <div class="row">
+                    <div class="col-md-5">
+                      <div class="detail-box">
+                        <h1>
+                          For All Your <br>
+                          Reviews Needs
+                        </h1>
+                        <p>
+                          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Minus quidem maiores perspiciatis, illo maxime voluptatem a itaque suscipit.
+                        </p>
+                        <div class="btn-box">
+                          <a href="" class="btn1">
+                            Contact Us
+                          </a>
+                          <a href="" class="btn2">
+                            About Us
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-7">
+                      <div class="img-box">
+                        <img src="static/images/slider-img.png" alt="">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <ol class="carousel-indicators">
+              <li data-target="#customCarousel" data-slide-to="0" class="active"></li>
+              <li data-target="#customCarousel" data-slide-to="1"></li>
+              <li data-target="#customCarousel" data-slide-to="2"></li>
+            </ol>
+          </div>
+        </section>
+        <!-- end slider section -->
+      </div>
+    <div class="container mt-5" id="scroll_container">
+        <h1 class="text-center">Ebay Product Review Scrapper</h1>
+        <form method="POST" onsubmit="showLoader()">
+            <div class="form-group">
+                <label for="product_name">Product Name</label>
+                <input type="text" class="form-control" id="product_name" name="product_name" required>
+            </div>
+            <div class="form-group">
+                <label for="url">Product Reviews URL</label>
+                <input type="url" class="form-control" id="url" name="url" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Scrape Reviews</button>
+        </form>
+        {% if summary and tables %}
+        <div class="mt-5">
+            <h3>Review Summary</h3>
+    
+            <div class="mt-3">
+                <h4>Review Counts</h4>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="review-count">
+                            <strong>Good Reviews:</strong> <span id="good-reviews">{{ summary['good_reviews'] }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="review-count">
+                            <strong>Bad Reviews:</strong> <span id="bad-reviews">{{ summary['bad_reviews'] }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="review-count">
+                            <strong>Neutral Reviews:</strong> <span id="neutral-reviews">{{ summary['neutral_reviews'] }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <h4><strong>Recommendation:</strong> {{ summary['recommendation'] }}</h4>
+    
+            <!-- New Div for Positive Comments Display -->
+            <div class="mt-5">
+                <h3>Positive Comments</h3>
+                <div class="scrollable-comments" style="max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; border-radius: 5px;">
+                    <ul class="list-group">
+                        {% for comment in positive_comments %}
+                            <li class="list-group-item">
+                                <p>{{ loop.index }}. {{ comment }}</p>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+    
+            <!-- New Div for Negative Comments Display -->
+            <div class="mt-5">
+                <h3>Negative Comments</h3>
+                <div class="scrollable-comments" style="max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; border-radius: 5px;">
+                    <ul class="list-group">
+                        {% for comment in negative_comments %}
+                            <li class="list-group-item">
+                                <p>{{ loop.index }}. {{ comment }}</p>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+    
+            <!-- Display the Scraped Reviews Table -->
+            <div class="mt-5">
+                <h3>Scraped Reviews</h3>
+                <div class="table-container">
+                    {{ tables[0]|safe }}
+                </div>
+            </div>
+            <br><br>
+    
+            <!-- Display the Charts -->
+            <div class="mt-5">
+                <h3>Charts</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="chart-container">
+                            <canvas id="reviewChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="chart-container">
+                            <canvas id="reviewDistributionChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="chart-container">
+                            <canvas id="trendChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="chart-container">
+                            <canvas id="recommendationChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    
+
+    <br><br>
+    
+<!-- Footer -->
+<div class="footer">
+    <div class="footer-logo">
+        <img src="../static/images/logo.png" alt="Logo">
+        <h5>Z A I B T E N</h5>
+    </div>
+    <div class="footer-links">
+        <a href="#" class="footer-link">Home</a>
+        <a href="#" class="footer-link">About</a>
+        <a href="#" class="footer-link">Services</a>
+        <a href="#" class="footer-link">Blog</a>
+        <a href="#" class="footer-link">Contact</a>
+    </div>
+    <div class="footer-social-icons">
+        <a href="#" class="fab fa-facebook-f"></a>
+        <a href="#" class="fab fa-twitter"></a>
+        <a href="#" class="fab fa-linkedin-in"></a>
+        <a href="#" class="fab fa-instagram"></a>
+    </div>
+    <div class="footer-about">
+        <p>MyApp is a platform that provides reliable customer reviews and analysis to help you make the best buying decisions. With a focus on transparency and authenticity, we aim to be the most trusted review platform.</p>
+        <p>For more information, feel free to contact us via our contact page or visit our FAQ section for any inquiries.</p>
+    </div>
+</div>
+
+<script>
+function showLoader() {
+            document.getElementById('loader').style.display = 'flex';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide loader once the page has fully loaded
+            document.getElementById('loader').style.display = 'none';
+        });
+
+        window.onload = function () {
+    const scrollPosition = sessionStorage.getItem('scrollPosition');
+    if (scrollPosition) {
+        window.scrollTo({
+            top: parseInt(scrollPosition),
+            behavior: 'smooth' // Add smooth scrolling behavior
+        });
+    } else {
+        scrollToElement(); // Scroll to the container smoothly
+    }
+};
+
+function scrollToElement() {
+    document.getElementById('scroll_container').scrollIntoView({
+        behavior: 'smooth', // Smooth scrolling
+        block: 'start'      // Align to the top of the div
+    });
+}
+
+
+    const goodReviews = parseInt(document.getElementById('good-reviews')?.textContent || 0);
+    const badReviews = parseInt(document.getElementById('bad-reviews')?.textContent || 0);
+    const neutralReviews = parseInt(document.getElementById('neutral-reviews')?.textContent || 0);
+
+    const summaryData = { good: goodReviews, bad: badReviews, neutral: neutralReviews };
+
+
+
+
+    const ctxBar = document.getElementById('reviewChart')?.getContext('2d');
+    if (ctxBar) {
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ['Good Reviews', 'Bad Reviews', 'Neutral Reviews'],
+                datasets: [{
+                    label: 'Number of Reviews',
+                    data: [summaryData.good, summaryData.bad, summaryData.neutral],
+                    backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(255, 99, 132, 0.6)', 'rgba(255, 206, 86, 0.6)'],
+                    borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)', 'rgba(255, 206, 86, 1)'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: { y: { beginAtZero: true } },
+                responsive: true,
+                plugins: {
+                    legend: { display: true, position: 'top' },
+                    title: { display: true, text: 'Review Summary' }
+                }
+            }
+        });
+    }
+
+    const ctxPie = document.getElementById('reviewDistributionChart')?.getContext('2d');
+    if (ctxPie) {
+        new Chart(ctxPie, {
+            type: 'pie',
+            data: {
+                labels: ['Good', 'Bad', 'Neutral'],
+                datasets: [{
+                    data: [summaryData.good, summaryData.bad, summaryData.neutral],
+                    backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(255, 99, 132, 0.6)', 'rgba(255, 206, 86, 0.6)'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: true, position: 'top' },
+                    title: { display: true, text: 'Review Distribution' }
+                }
+            }
+        });
+    }
+
+    const ctxLine = document.getElementById('trendChart')?.getContext('2d');
+    if (ctxLine) {
+        new Chart(ctxLine, {
+            type: 'line',
+            data: {
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5'],
+                datasets: [{
+                    label: 'Trends Over Time',
+                    data: [12, 19, 3, 5, 2],
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    fill: true,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: true, position: 'top' },
+                    title: { display: true, text: 'Trends Over Time' }
+                },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+    }
+
+    const ctxDoughnut = document.getElementById('recommendationChart')?.getContext('2d');
+    if (ctxDoughnut) {
+        new Chart(ctxDoughnut, {
+            type: 'doughnut',
+            data: {
+                labels: ['Recommended', 'Not Recommended'],
+                datasets: [{
+                    data: [summaryData.good, summaryData.bad],
+                    backgroundColor: ['rgba(54, 162, 235, 0.6)', 'rgba(255, 99, 132, 0.6)'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: true, position: 'top' },
+                    title: { display: true, text: 'Recommendation Overview' }
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

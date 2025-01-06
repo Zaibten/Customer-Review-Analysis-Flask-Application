@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviews Analysis | ZAIBTEN</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+  <link rel="icon" href="static/images/logo.png" type="image/png" />
+
+     <!-- Basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Mobile Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <!-- Site Metas -->
+  <link rel="icon" href="images/fevicon.png" type="image/gif" />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+  <!-- bootstrap core css -->
+  <link rel="stylesheet" type="text/css" href="static/css/bootstrap.css" />
+
+  <!-- fonts style -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,600,700&display=swap" rel="stylesheet" />
+
+  <!-- font awesome style -->
+  <link href="static/css/font-awesome.min.css" rel="stylesheet" />
+  <!-- Custom styles for this template -->
+  <link href="static/css/style.css" rel="stylesheet" />
+  <!-- responsive style -->
+  <link href="static/css/responsive.css" rel="stylesheet" />
+  <script>
+    function confirmLogout() {
+      // Display confirmation box
+      var result = confirm("Are you sure you want to log out?");
+      if (result) {
+        // Redirect to logout if confirmed
+        window.location.href = "/logout";
+      }
+    }
+  </script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        label {
+            font-size: 16px;
+            color: #555;
+        }
+
+        select {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        select:focus {
+            border-color: #007BFF;
+        }
+
+        button {
+            width: 80%;
+            padding: 15px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+        }
+
+        button:hover {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .selection-details {
+            margin-top: 20px;
+            background-color: #f1f1f1;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .selection-details p {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+
+        .selection-details h2 {
+            text-align: center;
+            color: #007BFF;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .review-text {
+            white-space: pre-line; /* This makes the text break after each period */
+            font-style: italic;
+            color: #333;
+        }
+
+        .graph-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+        }
+        body {
+            background: linear-gradient(135deg, #ffffff, #f7f7f7);
+            font-family: 'Poppins', sans-serif;
+        }
+    /* Footer Styles */
+    .nav-item.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+/* Adjust dropdown positioning */
+.navbar-nav .dropdown-menu {
+  margin-top: 0;
+  border-radius: 0;
+}
+.footer {
+            background-color: #111;
+            color: #bbb;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .footer-logo img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+        }
+
+        .footer-logo h5 {
+            margin-top: 10px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        .footer-links .footer-link {
+            color: #ccc;
+            font-size: 18px;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links .footer-link:hover {
+            color: #fff;
+        }
+
+        .footer-social-icons {
+            margin-top: 30px;
+        }
+
+        .footer-social-icons a {
+            color: #ccc;
+            font-size: 25px;
+            margin: 0 15px;
+            transition: color 0.3s ease;
+        }
+
+        .footer-social-icons a:hover {
+            color: #fff;
+        }
+
+        .footer-about {
+            margin-top: 40px;
+            font-size: 16px;
+            color: #bbb;
+        }
+
+        .footer-about p {
+            line-height: 1.6;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .footer-links {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+        .graph-container div {
+            width: 45%;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .graph-container div:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .graph-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .loader {
+            display: block;
+            text-align: center;
+        }
+
+        .loader img {
+            width: 50px;
+            height: 50px;
+        }
+
+        /* Hide the loader after page load */
+        .hide-loader .loader {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero_area">
+        <header class="header_section long_section px-0">
+          <nav class="navbar navbar-expand-lg custom_nav-container ">
+            <a class="navbar-brand" href="/">
+              <span>
+                Z A I B T E N
+              </span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class=""> </span>
+            </button>
+    
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <div class="d-flex mx-auto flex-column flex-lg-row align-items-center">
+                <ul class="navbar-nav">
+                  <li class="nav-item active">
+                    <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/index">Review Analysis</a>
+                  </li>
+                  <li class="nav-item">
+<a class="nav-link" href="/about">About Us</a>                  </li>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="/livescrap" id="liveScrapDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Live Scrapper
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="liveScrapDropdown">
+                      <li><a class="dropdown-item" href="#">Live Scrapper</a></li>
+                      <li><a class="dropdown-item" href="/livescrap">Amazon Scrapper</a></li>
+                      <li><a class="dropdown-item" href="/ebay_index">Ebay Scrapper</a></li>
+                      <!-- <li><a class="dropdown-item" href="/scrap-help">Help</a></li> -->
+                    </ul>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="contact.html">Contact Us</a>
+                  </li>
+                </ul>
+              </div>
+              
+              <div class="quote_btn-container">
+                {% if username %}
+                  <a href="#">
+                    <span>{{ username }}</span>
+                    <i class="fa fa-user" aria-hidden="true"></i>
+                  </a>
+                  <!-- Trigger confirmLogout function when the user clicks on logout -->
+                  <a href="javascript:void(0);" onclick="confirmLogout()" class="ml-3">
+                    <span>Logout</span>
+                    <i class="fa fa-sign-out" aria-hidden="true"></i>
+                  </a>
+                {% else %}
+                  <a href="/login">
+                    <span>Login</span>
+                    <i class="fa fa-user" aria-hidden="true"></i>
+                  </a>
+                {% endif %}
+                <form class="form-inline">
+                  <button class="btn my-2 my-sm-0 nav_search-btn" type="submit">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </nav>
+        </header>
+    
+      
+      <!-- Full Page Image Background Carousel Header -->
+      <div id="myCarousel" class="carousel slide">
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+                <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                <li data-target="#myCarousel" data-slide-to="1"></li>
+                <li data-target="#myCarousel" data-slide-to="2"></li>
+            </ol>
+    
+            <!-- Wrapper for Slides -->
+            <div class="carousel-inner">
+                <div class="item active">
+                    <!-- Set the first background image using inline CSS below. -->
+                    <div class="fill" style="background-image:url('http://www.marchettidesign.net/demo/optimized-bootstrap/code.jpg');"></div>
+                    <div class="carousel-caption">
+                         <h2 class="animated fadeInLeft">Caption Animation</h2>
+                         <p class="animated fadeInUp">Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
+                         <p class="animated fadeInUp"><a href="#" class="btn btn-transparent btn-rounded btn-large">Learn More</a></p>
+                    </div>
+                </div>
+                <div class="item">
+                    <!-- Set the second background image using inline CSS below. -->
+                    <div class="fill" style="background-image:url('http://www.marchettidesign.net/demo/optimized-bootstrap/conference.jpg');"></div>
+                    <div class="carousel-caption">
+                         <h2 class="animated fadeInDown">Caption Animation</h2>
+                         <p class="animated fadeInUp">Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
+                         <p class="animated fadeInUp"><a href="#" class="btn btn-transparent btn-rounded btn-large">Learn More</a></p>
+                    </div>
+                </div>
+                <div class="item">
+                    <!-- Set the third background image using inline CSS below. -->
+                    <div class="fill" style="background-image:url('http://www.marchettidesign.net/demo/optimized-bootstrap/campus.jpg');"></div>
+                    <div class="carousel-caption">
+                         <h2 class="animated fadeInRight">Caption Animation</h2>
+                         <p class="animated fadeInRight">Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
+                         <p class="animated fadeInRight"><a href="#" class="btn btn-transparent btn-rounded btn-large">Learn More</a></p>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Controls -->
+            <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+                <span class="icon-prev"></span>
+            </a>
+            <a class="right carousel-control" href="#myCarousel" data-slide="next">
+                <span class="icon-next"></span>
+            </a>
+    
+        </div>
+        <!-- end header section -->
+        <!-- slider section -->
+        <section class="slider_section long_section">
+          <div id="customCarousel" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <div class="container ">
+                  <div class="row">
+                    <div class="col-md-5">
+                      <div class="detail-box">
+                        <h1>
+                          For All Your <br>
+                          Reviews Needs
+                        </h1>
+                        <p>
+                          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Minus quidem maiores perspiciatis, illo maxime voluptatem a itaque suscipit.
+                        </p>
+                        <div class="btn-box">
+                          <a href="" class="btn1">
+                            Contact Us
+                          </a>
+                          <a href="" class="btn2">
+                            About Us
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-7">
+                      <div class="img-box">
+                        <img src="static/images/slider-img.png" alt="">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <div class="container ">
+                  <div class="row">
+                    <div class="col-md-5">
+                      <div class="detail-box">
+                        <h1>
+                          For All Your <br>
+                          Reviews Needs
+                        </h1>
+                        <p>
+                          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Minus quidem maiores perspiciatis, illo maxime voluptatem a itaque suscipit.
+                        </p>
+                        <div class="btn-box">
+                          <a href="" class="btn1">
+                            Contact Us
+                          </a>
+                          <a href="" class="btn2">
+                            About Us
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-7">
+                      <div class="img-box">
+                        <img src="static/images/slider-img.png" alt="">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <div class="container ">
+                  <div class="row">
+                    <div class="col-md-5">
+                      <div class="detail-box">
+                        <h1>
+                          For All Your <br>
+                          Reviews Needs
+                        </h1>
+                        <p>
+                          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Minus quidem maiores perspiciatis, illo maxime voluptatem a itaque suscipit.
+                        </p>
+                        <div class="btn-box">
+                          <a href="" class="btn1">
+                            Contact Us
+                          </a>
+                          <a href="" class="btn2">
+                            About Us
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-7">
+                      <div class="img-box">
+                        <img src="static/images/slider-img.png" alt="">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <ol class="carousel-indicators">
+              <li data-target="#customCarousel" data-slide-to="0" class="active"></li>
+              <li data-target="#customCarousel" data-slide-to="1"></li>
+              <li data-target="#customCarousel" data-slide-to="2"></li>
+            </ol>
+          </div>
+        </section>
+        <!-- end slider section -->
+      </div>
+
+    <div class="container">
+        <h1>Zaibten Review Analysis</h1>
+
+        <form method="POST">
+            <!-- Category Dropdown -->
+            <label for="category">Category:</label>
+            <select name="category" id="category" onchange="loadSubcategories()">
+                <option value="" disabled selected>Select Category</option>
+                {% for category in categories %}
+                    <option value="{{ category }}" {% if category == selected_category %}selected{% endif %}>{{ category }}</option>
+                {% endfor %}
+            </select>
+
+            <!-- Subcategory Dropdown -->
+            <label for="subcategory">Subcategory:</label>
+            <select name="subcategory" id="subcategory" onchange="loadModels()" disabled>
+                <option value="" disabled selected>Select Subcategory</option>
+                {% for subcategory in subcategories %}
+                    <option value="{{ subcategory }}" {% if subcategory == selected_subcategory %}selected{% endif %}>{{ subcategory }}</option>
+                {% endfor %}
+            </select>
+
+            <!-- Model Dropdown -->
+            <label for="model">Model:</label>
+            <select name="model" id="model" disabled>
+                <option value="" disabled selected>Select Model</option>
+                {% for model in models %}
+                    <option value="{{ model }}" {% if model == selected_model %}selected{% endif %}>{{ model }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Submit</button>
+        </form>
+
+        <div class="loader">
+            <img src="static/images/loader.gif" alt="Loading...">
+        </div>
+
+        {% if selected_category and selected_subcategory and selected_model %}
+            <div class="selection-details" id="best-product-details">
+                <h2>Best Product Details</h2>
+                <p><strong>Product Name:</strong> {{ best_product['product_name'] }}</p>
+                <p><strong>Rating:</strong> {{ best_product['rating'] }} Stars</p>
+                <p><strong>Review Title:</strong> {{ best_product['title'] }}</p>
+                <p><strong>Most Good Review:</strong> <span class="review-text">{{ best_product['review_text'] }}</span></p>
+                <img src="{{ best_product['image'] }}" alt="Product Image" style="max-width: 200px; margin-top: 15px;">
+            </div>
+
+            <div class="graph-container">
+                {% if graph_url %}
+                    <div onclick="showGraph('graph')">
+                        <img src="data:image/png;base64,{{ graph_url }}" alt="Ratings Distribution">
+                        <p>Ratings Distribution</p>
+                    </div>
+                {% endif %}
+                
+                {% if pie_chart_url %}
+                    <div onclick="showGraph('pie_chart')">
+                        <img src="data:image/png;base64,{{ pie_chart_url }}" alt="Ratings Proportions">
+                        <p>Ratings Proportions</p>
+                    </div>
+                {% endif %}
+                
+                {% if histogram_url %}
+                    <div onclick="showGraph('histogram')">
+                        <img src="data:image/png;base64,{{ histogram_url }}" alt="Review Length Distribution">
+                        <p>Review Length Distribution</p>
+                    </div>
+                {% endif %}
+                
+                {% if boxplot_url %}
+                    <div onclick="showGraph('boxplot')">
+                        <img src="data:image/png;base64,{{ boxplot_url }}" alt="Boxplot of Ratings">
+                        <p>Boxplot of Ratings</p>
+                    </div>
+                {% endif %}
+                
+                {% if scatterplot_url %}
+                    <div onclick="showGraph('scatterplot')">
+                        <img src="data:image/png;base64,{{ scatterplot_url }}" alt="Review Length vs. Rating">
+                        <p>Review Length vs. Rating</p>
+                    </div>
+                {% endif %}
+                
+                {% if line_chart_url %}
+                    <div onclick="showGraph('line_chart')">
+                        <img src="data:image/png;base64,{{ line_chart_url }}" alt="Average Ratings Over Time">
+                        <p>Average Ratings Over Time</p>
+                    </div>
+                {% endif %}
+                
+                {% if line_chart_url_2 %}
+                    <div onclick="showGraph('line_chart_2')">
+                        <img src="data:image/png;base64,{{ line_chart_url_2 }}" alt="Rating Trend Over Time">
+                        <p>Rating Trend Over Time</p>
+                    </div>
+                {% endif %}
+                
+                {% if pie_chart_url_2 %}
+                    <div onclick="showGraph('pie_chart_2')">
+                        <img src="data:image/png;base64,{{ pie_chart_url_2 }}" alt="Review Sentiment Distribution">
+                        <p>Review Sentiment Distribution</p>
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+    <br>
+    <br>
+        <!-- Footer -->
+        <div class="footer">
+          <div class="footer-logo">
+              <img src="../static/images/logo.png" alt="Logo">
+              <h5>Z A I B T E N</h5>
+          </div>
+          <div class="footer-links">
+              <a href="#" class="footer-link">Home</a>
+              <a href="#" class="footer-link">About</a>
+              <a href="#" class="footer-link">Services</a>
+              <a href="#" class="footer-link">Blog</a>
+              <a href="#" class="footer-link">Contact</a>
+          </div>
+          <div class="footer-social-icons">
+              <a href="#" class="fab fa-facebook-f"></a>
+              <a href="#" class="fab fa-twitter"></a>
+              <a href="#" class="fab fa-linkedin-in"></a>
+              <a href="#" class="fab fa-instagram"></a>
+          </div>
+          <div class="footer-about">
+              <p>MyApp is a platform that provides reliable customer reviews and analysis to help you make the best buying decisions. With a focus on transparency and authenticity, we aim to be the most trusted review platform.</p>
+              <p>For more information, feel free to contact us via our contact page or visit our FAQ section for any inquiries.</p>
+          </div>
+      </div>
+    
+      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"></script>
+    
+    
+      <!-- jQery -->
+      <script src="static/js/jquery-3.4.1.min.js"></script>
+      <!-- bootstrap js -->
+      <script src="static/js/bootstrap.js"></script>
+      <!-- custom js -->
+      <script src="static/js/custom.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Hide loader once the page is fully loaded
+            $('body').addClass('hide-loader');
+
+            // Auto-scroll to Best Product Details
+            $('html, body').animate({
+                scrollTop: $("#best-product-details").offset().top
+            }, 1000);
+        });
+
+        function loadSubcategories() {
+            var category = document.getElementById('category').value;
+            if (category) {
+                $.get("/get_subcategories/" + category, function(data) {
+                    var subcategorySelect = $('#subcategory');
+                    subcategorySelect.empty();
+                    subcategorySelect.append('<option value="" disabled selected>Select Subcategory</option>');
+                    data.subcategories.forEach(function(subcategory) {
+                        subcategorySelect.append('<option value="' + subcategory + '">' + subcategory + '</option>');
+                    });
+                    subcategorySelect.prop('disabled', false);
+                });
+            }
+        }
+
+        function loadModels() {
+            var subcategory = document.getElementById('subcategory').value;
+            if (subcategory) {
+                $.get("/get_models/" + subcategory, function(data) {
+                    var modelSelect = $('#model');
+                    modelSelect.empty();
+                    modelSelect.append('<option value="" disabled selected>Select Model</option>');
+                    data.models.forEach(function(model) {
+                        modelSelect.append('<option value="' + model + '">' + model + '</option>');
+                    });
+                    modelSelect.prop('disabled', false);
+                });
+            }
+        }
+
+        function showGraph(chartName) {
+            alert("You clicked on " + chartName);
+        }
+    </script>
+</body>
+</html>

@@ -3,16 +3,20 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Authentication Forms</title>
+    <title>Authentication | Zaibten</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="static/style.css">
     <script src="static/script.js" defer></script>
+    
+  <link rel="icon" href="static/images/logo.png" type="image/png" />
+
 </head>
 <body>
     <div class="container" id="container">
         <!-- Sign Up Form -->
         <div class="form-container sign-up-container">
-            <form action="/signup" method="POST">
+            <form action="/signup" method="POST" onsubmit="return validateForm('signup')">
                 <h1>Create Account</h1>
                 <div class="social-container">
                     <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
@@ -24,18 +28,19 @@
                     <input type="text" name="name" placeholder="Name" required />
                 </div>
                 <div class="infield">
-                    <input type="email" name="email" placeholder="Email" required />
+                    <input type="email" id="signup-email" name="email" placeholder="Email" required />
                 </div>
-                <div class="infield">
-                    <input type="password" name="password" placeholder="Password" required />
+                <div class="infield" style="position: relative;">
+                    <input type="password" id="signup-password" name="password" placeholder="Password" required />
+                    <i class="fas fa-eye" id="signup-eye" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;" onclick="togglePassword('signup-password', 'signup-eye')"></i>
                 </div>
-                <button type="submit">Sign Up</button>
+                <button type="submit" style="cursor: hand;">Sign Up</button>
             </form>
         </div>
 
         <!-- Sign In Form -->
         <div class="form-container sign-in-container">
-            <form action="/login" method="POST">
+            <form action="/login" method="POST" onsubmit="return validateForm('signin')">
                 <h1>Sign in</h1>
                 <div class="social-container">
                     <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
@@ -44,13 +49,14 @@
                 </div>
                 <span>or use your account</span>
                 <div class="infield">
-                    <input type="email" name="email" placeholder="Email" required />
+                    <input type="email" id="signin-email" name="email" placeholder="Email" required />
                 </div>
-                <div class="infield">
-                    <input type="password" name="password" placeholder="Password" required />
+                <div class="infield" style="position: relative;">
+                    <input type="password" id="signin-password" name="password" placeholder="Password" required />
+                    <i class="fas fa-eye" id="signin-eye" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;" onclick="togglePassword('signin-password', 'signin-eye')"></i>
                 </div>
                 <a href="#" class="forgot">Forgot your password?</a>
-                <button type="submit">Sign In</button>
+                <button type="submit" style="cursor: hand;">Sign In</button>
             </form>
         </div>
 
@@ -60,19 +66,61 @@
                 <div class="overlay-panel overlay-left">
                     <h1>Hello again!</h1>
                     <p>To keep in touch, please login with your credentials</p>
-                    <button class="ghost" id="signInBtn">Sign In</button>
-                </div>
+                    <button class="ghost" id="signInBtn" style="cursor: hand;">Sign In</button>
+                    <a href="/home">
+                        <button class="ghost" id="home" style="cursor: pointer;">Proceed to home page</button>
+                    </a>
+                                    </div>
                 <div class="overlay-panel overlay-right">
                     <h1>Welcome!</h1>
                     <p>Enter your credentials and start your journey with us</p>
-                    <button class="ghost" id="signUpBtn">Sign Up</button>
+                    <button class="ghost" id="signUpBtn" style="cursor: hand;">Sign Up</button>
+                    <a href="/home">
+                        <button class="ghost" id="home" style="cursor: pointer;">Proceed to home page</button>
+                    </a>
+                    
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript for Toggle Effect -->
+    <!-- JavaScript -->
     <script>
+        // Toggle Password Visibility
+        function togglePassword(passwordFieldId, eyeIconId) {
+            const passwordField = document.getElementById(passwordFieldId);
+            const eyeIcon = document.getElementById(eyeIconId);
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                eyeIcon.classList.remove("fa-eye");
+                eyeIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordField.type = "password";
+                eyeIcon.classList.remove("fa-eye-slash");
+                eyeIcon.classList.add("fa-eye");
+            }
+        }
+
+        // Validate Email and Password
+        function validateForm(formType) {
+    const email = document.getElementById(`${formType}-email`).value;
+    const password = document.getElementById(`${formType}-password`).value;
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+
+    if (!emailPattern.test(email)) {
+        alert("Please enter a valid email address.");
+        return false;
+    }
+
+    if (password.length < 8) {
+        alert("Password must be at least 8 characters long.");
+        return false;
+    }
+
+    return true;
+}
+
+
         const container = document.getElementById('container');
         const signUpBtn = document.getElementById('signUpBtn');
         const signInBtn = document.getElementById('signInBtn');
@@ -92,6 +140,5 @@
             alert("Invalid credentials, please try again.");
         }
     </script>
-    
 </body>
 </html>

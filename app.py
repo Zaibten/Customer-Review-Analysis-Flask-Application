@@ -11,6 +11,7 @@ import seaborn as sns
 from collections import Counter
 import numpy as np
 from datetime import datetime
+from textblob import TextBlob
 import matplotlib
 import os
 from urllib.parse import urljoin
@@ -22,7 +23,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
-import pandas as pd
 import time
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -37,7 +37,12 @@ from fpdf import FPDF  # PDF generation library
 matplotlib.use('Agg')
 from bson import ObjectId
 matplotlib.use('Agg')  # Use a non-interactive backend
+from nltk.sentiment import SentimentIntensityAnalyzer
+import io
+from flask import Flask, render_template, request, jsonify
 
+import nltk
+nltk.download('vader_lexicon')
 
 app = Flask(__name__)
 
@@ -54,7 +59,7 @@ driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 
 # Load the CSV file
 #df = pd.read_csv('Iphone 13 Amazon Reviews.csv')
-df = pd.read_csv('Amazon_Mobile_Reviews.csv')
+df = pd.read_csv('zaibten_scrap_datafile.csv')
 
 
 # Print column names for debugging
@@ -342,7 +347,7 @@ def signup():
 def dashboard():
     if 'user_id' in session:
         user = users_collection.find_one({"_id": ObjectId(session['user_id'])})
-        return f"Welcome {user['name']}!"
+        return f"{user['name']}!"
     else:
         return redirect(url_for('login'))
 
@@ -361,7 +366,7 @@ def livescrap():
 @app.route('/scrape', methods=['POST'])
 @login_required
 def scrape():
-        # Check if user is logged in
+    # Check if user is logged in
     if 'user_id' in session:
         user = users_collection.find_one({"_id": ObjectId(session['user_id'])})
         username = user['name']  # Assuming the user's name is stored in the database
@@ -374,6 +379,8 @@ def scrape():
     names, ratings, rating_dates, titles, reviews_text, images = [], [], [], [], [], []
     keywords_found = {'good': [], 'bad': [], 'recommended': []}
     page_number = 1
+
+    sia = SentimentIntensityAnalyzer()  # Initialize SentimentIntensityAnalyzer
 
     while True:
         try:
@@ -416,11 +423,7 @@ def scrape():
             print(f"An error occurred: {e}")
             break
 
-    total_good_reviews = len(keywords_found['good'])
-    total_bad_reviews = len(keywords_found['bad'])
-    product_status = "Good Product: Recommended" if total_good_reviews > total_bad_reviews else "Not Recommended Product"
-
-    
+    # Create DataFrame with ratings and sentiment analysis
     data = pd.DataFrame({
         'Product Name': [product_name] * len(names),
         'Profile Name': names,
@@ -428,8 +431,24 @@ def scrape():
         'Date': rating_dates,
         'Title': titles,
         'Review Text': reviews_text,
-        # 'Image': images
     })
+
+    # Convert ratings to numeric for comparison
+    data['Rating'] = data['Rating'].str.extract('(\d+\.\d+)').astype(float)  # Extract numeric rating
+
+    # Set sentiment based on rating only
+    data['Sentiment'] = data['Rating'].apply(lambda x: 'Negative' if x < 4 else 'Positive')
+
+    # (Optional) Collect insights based on keywords but do not change sentiment
+    for idx, row in data.iterrows():
+        review_text = row['Review Text']
+        if any(keyword in review_text.lower() for keyword in KEYWORDS['good']):
+            # This is for insights; you can log or print for further analysis
+            pass
+
+    total_good_reviews = len(keywords_found['good'])
+    total_bad_reviews = len(keywords_found['bad'])
+    product_status = "Good Product: Recommended" if total_good_reviews > total_bad_reviews else "Not Recommended Product"
 
     # Plot good vs bad reviews
     plt.figure(figsize=(6, 4))
@@ -470,7 +489,7 @@ def scrape():
 
     img_data = base64.b64encode(img_io1.getvalue()).decode()
     rendered_page = render_template('livescrap.html', 
-                                    tables=[data.to_html(classes='data')],
+                                    tables=[data.to_html(classes='data', index=False)],  # Exclude index
                                     titles=['Scraped Reviews'],
                                     keywords_found=keywords_found,
                                     total_good_reviews=total_good_reviews,
@@ -478,7 +497,6 @@ def scrape():
                                     product_status=product_status,
                                     graph_data=img_data, username=username)
     return rendered_page
-
 
 def create_pdf(img_ios, product_name, product_status, total_good_reviews, total_bad_reviews):
     pdf = FPDF()
@@ -556,6 +574,211 @@ def send_email(img_ios, product_name, product_status, total_good_reviews, total_
     except Exception as e:
         print(f"Failed to send email: {e}")
 
+# Function to determine sentiment
+def Yelp_get_sentiment_score(comment):
+    analysis = TextBlob(comment)
+    if analysis.sentiment.polarity > 0:
+        return "Positive"
+    elif analysis.sentiment.polarity < 0:
+        return "Negative"
+    else:
+        return "Neutral"
+
+# Function to scrape reviews data
+def Yelp_scrape_reviews(url, product_name):
+    driver = webdriver.Chrome()
+    driver.get(url)
+    time.sleep(3)
+    reviews_data = []
+
+    while True:
+        reviews_section = driver.find_elements(By.CSS_SELECTOR, "li.fdbk-container")
+        for review in reviews_section:
+            try:
+                username = review.find_element(By.CSS_SELECTOR, "div.fdbk-container__details__info__username span").text
+                date = review.find_element(By.CSS_SELECTOR, "span.fdbk-container__details__info__divide__time span").text
+                comment = review.find_element(By.CSS_SELECTOR, "div.fdbk-container__details__comment span").text.strip()
+                if not comment:
+                    continue
+                feedback_type_icon = review.find_element(By.CSS_SELECTOR, "div.fdbk-container__details__info__icon svg")
+                feedback_type = feedback_type_icon.get_attribute("data-test-type")
+
+                sentiment_score = Yelp_get_sentiment_score(comment)
+
+                reviews_data.append({
+                    "Product Name": product_name,
+                    "Username": username,
+                    "Date": date,
+                    "Comment": comment,
+                    "Feedback Type": feedback_type,
+                    "Sentiment Score": feedback_type,
+                })
+            except Exception as e:
+                print("An error occurred:", e)
+
+        try:
+            next_button = driver.find_element(By.CSS_SELECTOR, "a.pagination__next")
+            next_href = next_button.get_attribute("href")
+            driver.execute_script("arguments[0].click();", next_button)
+            time.sleep(3)
+            if next_button.get_attribute("href") == next_href:
+                break
+        except:
+            break
+
+    driver.quit()
+    return reviews_data
+
+# Function to create PDF with review analysis summary and new graphs
+def Yelpcreate_pdf(summary, reviews_df):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", "B", 16)
+
+    # Title
+    pdf.cell(200, 10, txt="Review Analysis Report", ln=True, align="C")
+    pdf.ln(10)
+
+    # Summary Information
+    pdf.set_font("Arial", size=12)
+    pdf.cell(200, 10, txt=f"Product Name: {summary['product_name']}", ln=True)
+    pdf.cell(200, 10, txt=f"Good Reviews: {summary['good_reviews']}", ln=True)
+    pdf.cell(200, 10, txt=f"Bad Reviews: {summary['bad_reviews']}", ln=True)
+    pdf.cell(200, 10, txt=f"Neutral Reviews: {summary['neutral_reviews']}", ln=True)
+    pdf.cell(200, 10, txt=f"Recommendation: {summary['recommendation']}", ln=True)
+    pdf.ln(10)
+
+    # Plot Good vs Bad Reviews
+    plt.figure(figsize=(6, 4))
+    labels = ['Good Reviews', 'Bad Reviews']
+    values = [summary['good_reviews'], summary['bad_reviews']]
+    plt.bar(labels, values, color=['green', 'red'])
+    plt.title('Good vs Bad Reviews')
+    img_io1 = BytesIO()
+    plt.savefig(img_io1, format='png')
+    img_io1.seek(0)
+    plt.close()
+    pdf.image(img_io1, x=10, y=pdf.get_y(), w=100)
+    pdf.ln(50)
+
+    # Plot Rating Distribution
+    sentiment_counts = reviews_df['Sentiment Score'].value_counts()
+    sentiment_counts = sentiment_counts.reindex(['Positive', 'Neutral', 'Negative'], fill_value=0)  # Ensures all categories are present
+    plt.figure(figsize=(6, 4))
+    sentiment_counts.plot(kind='bar', color='skyblue')
+    plt.title('Rating Distribution')
+    plt.xlabel('Rating')
+    plt.ylabel('Count')
+    img_io2 = BytesIO()
+    plt.savefig(img_io2, format='png')
+    img_io2.seek(0)
+    plt.close()
+    pdf.image(img_io2, x=10, y=pdf.get_y(), w=100)
+    pdf.ln(50)
+
+    # Plot Review Word Count Distribution
+    word_counts = reviews_df['Comment'].apply(lambda x: len(x.split()))
+    plt.figure(figsize=(6, 4))
+    plt.hist(word_counts, bins=20, color='purple', edgecolor='black')
+    plt.title('Review Word Count Distribution')
+    plt.xlabel('Word Count')
+    plt.ylabel('Frequency')
+    img_io3 = BytesIO()
+    plt.savefig(img_io3, format='png')
+    img_io3.seek(0)
+    plt.close()
+    pdf.image(img_io3, x=10, y=pdf.get_y(), w=100)
+    pdf.ln(50)
+
+    pdf_output = BytesIO()
+    pdf.output(pdf_output)
+    pdf_output.seek(0)
+    return pdf_output
+
+# Function to send email with PDF attachment
+def Yelpsend_email(pdf_attachment, summary):
+    sender_email = "muzamilkhanofficial786@gmail.com"
+    recipient_email = get_logged_in_user_email()
+    password = "iaqu xvna tpix ugkt"
+
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = recipient_email
+    msg['Subject'] = f"Review Analysis Report for {summary['product_name']}"
+
+    attach_part = MIMEBase('application', 'octet-stream')
+    attach_part.set_payload(pdf_attachment.read())
+    encoders.encode_base64(attach_part)
+    attach_part.add_header('Content-Disposition', 'attachment', filename="Review_Analysis.pdf")
+    msg.attach(attach_part)
+
+    try:
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(sender_email, password)
+        server.sendmail(sender_email, recipient_email, msg.as_string())
+        server.quit()
+        print("Email sent successfully!")
+    except Exception as e:
+        print(f"Failed to send email: {e}")
+
+@app.route('/ebay_index', methods=['GET', 'POST'])
+@login_required
+def ebay_Index():
+    # Check if user is logged in
+    if 'user_id' in session:
+        user = users_collection.find_one({"_id": ObjectId(session['user_id'])})
+        username = user['name']  # Assuming the user's name is stored in the database
+    else:
+        username = None
+
+    reviews_df = None
+    positive_comments = []  # List for positive comments
+    negative_comments = []  # New list for negative comments
+    summary = {
+        "good_reviews": 0,
+        "bad_reviews": 0,
+        "neutral_reviews": 0,
+        "recommendation": "",
+        "product_name": ""
+    }
+
+    if request.method == 'POST':
+        product_name = request.form['product_name']
+        url = request.form['url']
+        summary["product_name"] = product_name
+        reviews_data = Yelp_scrape_reviews(url, product_name)
+        reviews_df = pd.DataFrame(reviews_data)
+
+        # Filter positive comments
+        positive_comments = reviews_df[reviews_df['Feedback Type'] == "positive"]['Comment'].tolist()
+
+        # Filter negative comments
+        negative_comments = reviews_df[reviews_df['Feedback Type'] == "negative"]['Comment'].tolist()
+
+        # Count the types of reviews based on Feedback Type
+        summary['good_reviews'] = reviews_df[reviews_df['Feedback Type'] == "positive"].shape[0]
+        summary['bad_reviews'] = reviews_df[reviews_df['Feedback Type'] == "negative"].shape[0]
+        summary['neutral_reviews'] = reviews_df[reviews_df['Feedback Type'] == "neutral"].shape[0]
+
+        # Determine recommendation
+        if summary['good_reviews'] > (summary['good_reviews'] + summary['bad_reviews'] + summary['neutral_reviews']) / 2:
+            summary['recommendation'] = "Recommended"
+        else:
+            summary['recommendation'] = "Not Recommended"
+
+        # Generate PDF and send email
+        pdf_attachment = Yelpcreate_pdf(summary, reviews_df)
+        Yelpsend_email(pdf_attachment, summary)
+
+    return render_template(
+        'ebay_index.html',
+        tables=[reviews_df.to_html(classes='table table-striped')] if reviews_df is not None else None,
+        summary=summary,
+        username=username,
+        positive_comments=positive_comments,  # Pass the list of positive comments
+        negative_comments=negative_comments   # Pass the list of negative comments
+    )
 
 @app.route('/index', methods=['GET', 'POST'])
 @login_required
@@ -626,10 +849,211 @@ def index():
                            review_length_plot=review_length_plot, ratings_heatmap_plot=ratings_heatmap_plot)
 
 
+
+@app.route('/about', methods=['GET', 'POST'])
+def about():
+    # Check if user is logged in
+    if 'user_id' in session:
+        user = users_collection.find_one({"_id": ObjectId(session['user_id'])})
+        username = user['name']  # Assuming the user's name is stored in the database
+    else:
+        username = None
+        
+    return render_template("about.html", username=username)
+
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    # Check if user is logged in
+    if 'user_id' in session:
+        user = users_collection.find_one({"_id": ObjectId(session['user_id'])})
+        username = user['name']  # Assuming the user's name is stored in the database
+    else:
+        username = None
+        
+    return render_template("contact.html", username=username)
+
 @app.route('/logout')
 def logout():
     session.pop('user_id', None)  # Clear the session
     return redirect(url_for('login'))
+
+@app.route('/reviews', methods=['GET', 'POST'])
+@login_required
+def reviews():
+    # Check if user is logged in
+    if 'user_id' in session:
+        user = users_collection.find_one({"_id": ObjectId(session['user_id'])})
+        username = user['name']  # Assuming the user's name is stored in the database
+    else:
+        username = None
+
+
+    # Fetch unique values from 'category', 'subcategory', and 'model'
+    categories = df['category'].dropna().unique()
+    subcategories = df['subcategory'].dropna().unique()
+    models = df['model'].dropna().unique()
+
+    selected_category = None
+    selected_subcategory = None
+    selected_model = None
+
+    best_product = None  # Initialize variable to hold best product details
+    graph_url = None  # Initialize variable to hold the graph image URL
+    pie_chart_url = None  # Initialize variable to hold the pie chart image URL
+    histogram_url = None  # Initialize variable to hold histogram image URL
+    boxplot_url = None  # Initialize variable to hold boxplot image URL
+    scatterplot_url = None  # Initialize variable to hold scatterplot image URL
+    line_chart_url = None  # Initialize variable to hold line chart image URL
+    line_chart_url_2 = None  # Initialize variable for the second line chart
+    pie_chart_url_2 = None  # Initialize variable for the second pie chart
+
+    if request.method == 'POST':
+        selected_category = request.form.get('category')
+        selected_subcategory = request.form.get('subcategory')
+        selected_model = request.form.get('model')
+
+        # Filter the data based on user selection
+        filtered_df = df[(
+            df['category'] == selected_category) & 
+            (df['subcategory'] == selected_subcategory) & 
+            (df['model'] == selected_model)
+        ]
+
+
+        # Find the product with the highest rating
+        if not filtered_df.empty:
+            best_product = filtered_df.loc[filtered_df['rating'].idxmax()]  # Get row with max rating
+
+            # Generate a bar chart for the ratings distribution
+            rating_counts = filtered_df['rating'].value_counts().sort_index()
+            fig, ax = plt.subplots(figsize=(8, 6))
+            ax.bar(rating_counts.index, rating_counts.values, color='skyblue')
+            ax.set_xlabel('Ratings')
+            ax.set_ylabel('Number of Reviews')
+            ax.set_title('Ratings Distribution')
+
+            # Save the bar chart to a string in base64 format
+            img_io = io.BytesIO()
+            fig.savefig(img_io, format='png')
+            img_io.seek(0)
+            graph_url = base64.b64encode(img_io.getvalue()).decode('utf-8')
+
+            # Generate a pie chart for the rating proportions
+            fig, ax = plt.subplots(figsize=(8, 6))
+            ax.pie(rating_counts.values, labels=rating_counts.index, autopct='%1.1f%%', colors=['skyblue', 'lightgreen', 'orange', 'lightcoral', 'gold'])
+            ax.set_title('Rating Proportions')
+
+            img_io = io.BytesIO()
+            fig.savefig(img_io, format='png')
+            img_io.seek(0)
+            pie_chart_url = base64.b64encode(img_io.getvalue()).decode('utf-8')
+
+            # Generate a histogram for review length distribution
+            review_lengths = filtered_df['review_text'].apply(lambda x: len(str(x)) if isinstance(x, str) else 0)
+            fig, ax = plt.subplots(figsize=(8, 6))
+            ax.hist(review_lengths, bins=20, color='skyblue', edgecolor='black')
+            ax.set_xlabel('Review Length (Characters)')
+            ax.set_ylabel('Frequency')
+            ax.set_title('Review Length Distribution')
+
+            img_io = io.BytesIO()
+            fig.savefig(img_io, format='png')
+            img_io.seek(0)
+            histogram_url = base64.b64encode(img_io.getvalue()).decode('utf-8')
+
+            # Generate a boxplot for rating distribution
+            fig, ax = plt.subplots(figsize=(8, 6))
+            ax.boxplot(filtered_df['rating'], patch_artist=True, boxprops=dict(facecolor='skyblue', color='black'))
+            ax.set_ylabel('Ratings')
+            ax.set_title('Boxplot of Ratings')
+
+            img_io = io.BytesIO()
+            fig.savefig(img_io, format='png')
+            img_io.seek(0)
+            boxplot_url = base64.b64encode(img_io.getvalue()).decode('utf-8')
+
+            # Generate a scatter plot for review length vs. rating
+            fig, ax = plt.subplots(figsize=(8, 6))
+            ax.scatter(review_lengths, filtered_df['rating'], color='blue', alpha=0.5)
+            ax.set_xlabel('Review Length (Characters)')
+            ax.set_ylabel('Ratings')
+            ax.set_title('Review Length vs. Rating')
+
+            img_io = io.BytesIO()
+            fig.savefig(img_io, format='png')
+            img_io.seek(0)
+            scatterplot_url = base64.b64encode(img_io.getvalue()).decode('utf-8')
+
+            # Generate a line chart for average ratings over time
+            dates = pd.date_range(start="2024-01-01", periods=10, freq="D")
+            avg_ratings = [3.5, 4.0, 4.5, 3.0, 3.8, 4.2, 4.0, 3.6, 4.1, 4.3]
+
+            fig, ax = plt.subplots(figsize=(8, 6))
+            ax.plot(dates, avg_ratings, marker='o', color='blue')
+            ax.set_xlabel('Review Date')
+            ax.set_ylabel('Average Rating')
+            ax.set_title('Average Ratings Over Time')
+
+            img_io = io.BytesIO()
+            fig.savefig(img_io, format='png')
+            img_io.seek(0)
+            line_chart_url = base64.b64encode(img_io.getvalue()).decode('utf-8')
+
+            # Generate a second line chart for rating changes over time
+            fig, ax = plt.subplots(figsize=(8, 6))
+            ax.plot(dates, [4.2, 4.1, 4.3, 3.9, 4.0, 4.1, 4.4, 4.0, 3.8, 4.2], marker='o', color='green')
+            ax.set_xlabel('Review Date')
+            ax.set_ylabel('Rating Value')
+            ax.set_title('Rating Trend Over Time')
+
+            img_io = io.BytesIO()
+            fig.savefig(img_io, format='png')
+            img_io.seek(0)
+            line_chart_url_2 = base64.b64encode(img_io.getvalue()).decode('utf-8')
+
+            # Generate a second pie chart for sentiment distribution
+            sentiment_counts = {'Positive': 80, 'Negative': 15, 'Neutral': 5}  # Example counts
+            fig, ax = plt.subplots(figsize=(8, 6))
+            ax.pie(sentiment_counts.values(), labels=sentiment_counts.keys(), autopct='%1.1f%%', colors=['lightgreen', 'orange', 'lightcoral'])
+            ax.set_title('Review Sentiment Distribution')
+
+            img_io = io.BytesIO()
+            fig.savefig(img_io, format='png')
+            img_io.seek(0)
+            pie_chart_url_2 = base64.b64encode(img_io.getvalue()).decode('utf-8')
+
+
+    return render_template(
+        'reviews.html',
+        categories=categories,
+        subcategories=subcategories,
+        models=models,
+        selected_category=selected_category,
+        selected_subcategory=selected_subcategory,
+        selected_model=selected_model,
+        best_product=best_product,  # Pass best product to the template
+        graph_url=graph_url,  # Pass the ratings distribution graph URL
+        pie_chart_url=pie_chart_url,  # Pass the pie chart URL
+        histogram_url=histogram_url,  # Pass the histogram URL
+        boxplot_url=boxplot_url,  # Pass the boxplot URL
+        scatterplot_url=scatterplot_url,  # Pass the scatter plot URL
+        line_chart_url=line_chart_url,  # Pass the line chart URL
+        line_chart_url_2=line_chart_url_2,  # Pass the second line chart URL
+        pie_chart_url_2=pie_chart_url_2,  # Pass the second pie chart URL
+        username=username
+    )
+
+@app.route('/get_subcategories/<category>', methods=['GET'])
+def get_subcategories(category):
+    subcategories = df[df['category'] == category]['subcategory'].dropna().unique()
+    return jsonify(subcategories=subcategories.tolist())
+
+@app.route('/get_models/<subcategory>', methods=['GET'])
+def get_models(subcategory):
+    models = df[df['subcategory'] == subcategory]['model'].dropna().unique()
+    return jsonify(models=models.tolist())
+
+
 
 
 if __name__ == '__main__':
